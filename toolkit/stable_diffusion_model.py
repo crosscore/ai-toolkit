@@ -669,9 +669,22 @@ class StableDiffusion:
                     )
                 elif not os.path.exists(load_lora_path):
                     print_acc(f"Grabbing lora from the hub: {load_lora_path}")
+                    # Parse the path - support both "namespace/repo" and "namespace/repo/filename" formats
+                    path_parts = load_lora_path.split("/")
+                    if len(path_parts) == 3:
+                        # Format: namespace/repo/filename
+                        repo_id = "/".join(path_parts[:2])
+                        filename = path_parts[2]
+                    elif len(path_parts) == 2:
+                        # Format: namespace/repo (use default filename)
+                        repo_id = load_lora_path
+                        filename = "pytorch_lora_weights.safetensors"
+                    else:
+                        raise ValueError(f"Invalid lora path format: {load_lora_path}. Expected 'namespace/repo' or 'namespace/repo/filename'")
+                    
                     new_lora_path = hf_hub_download(
-                        load_lora_path,
-                        filename="pytorch_lora_weights.safetensors"
+                        repo_id,
+                        filename=filename
                     )
                     # replace the path
                     load_lora_path = new_lora_path
