@@ -567,7 +567,9 @@ class ModelConfig:
         self.is_pixart_sigma: bool = kwargs.get('is_pixart_sigma', False)
         self.is_auraflow: bool = kwargs.get('is_auraflow', False)
         self.is_v3: bool = kwargs.get('is_v3', False)
-        self.is_flux: bool = kwargs.get('is_flux', False)
+        self.is_zimage: bool = kwargs.get('is_zimage', False)
+        # Z-Image models use a Flux-style architecture; alias the flag so configs can stay explicit.
+        self.is_flux: bool = kwargs.get('is_flux', False) or self.is_zimage
         self.is_lumina2: bool = kwargs.get('is_lumina2', False)
         if self.is_pixart_sigma:
             self.is_pixart = True
@@ -716,7 +718,7 @@ class ModelConfig:
                 self.arch = 'pixart_sigma'
             elif kwargs.get('is_auraflow', False):
                 self.arch = 'auraflow'
-            elif kwargs.get('is_flux', False):
+            elif kwargs.get('is_flux', False) or kwargs.get('is_zimage', False):
                 self.arch = 'flux'
             elif kwargs.get('is_lumina2', False):
                 self.arch = 'lumina2'
